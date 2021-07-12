@@ -1,0 +1,64 @@
+package ScreenShot;
+
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+
+import javax.swing.JFrame;
+
+
+public class CapturedScreen extends JFrame{
+	private static final long serialVersionUID = 1L;
+	Image img = null;
+	BufferedImage bufImage = null;
+	
+	//생성자
+	public CapturedScreen(BufferedImage bufImage) {
+		System.out.println("캡쳐 스크린 생성자");
+		this.setTitle("학생 화면");
+		this.bufImage = bufImage;
+		this.setSize(400,400);
+		this.displayCenter();
+		this.setVisible(true);
+		int w = this.getWidth();
+		int h = this.getHeight();
+		this.img = bufImage.getScaledInstance(w, h, Image.SCALE_DEFAULT);
+		this.drawImage(img, w, h);
+		//X버튼 눌렀을 때 수행
+		this.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent we){
+				CapturedScreen.this.dispose();
+			}
+		});
+	} //생성자 끝
+	
+	private void drawImage(Image img, int x, int y) {
+		Graphics g = this.getGraphics();
+		g.drawImage(img, 0, 0, x, y, this);
+		this.paint(g);
+		this.repaint();
+	}
+	
+	public void paint(Graphics g) {
+		if (this.img != null) {
+			g.drawImage(this.img, 0, 0, this.img.getWidth(this), this.img.getHeight(this), this);
+		}
+	}
+	
+	//화면 중앙 표시
+	private void displayCenter(){
+		//화면의 크기
+		Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();	
+		//프레임의 크기
+		Dimension frameDimension = this.getSize();
+		//화면 넓이/2 - 프레임 넓이/2
+		int xPosition = (int)(screenDimension.getWidth()/2 - frameDimension.getWidth()/2);
+		//화면 높이/2 - 프레임 높이/2
+		int yPosition = (int)(screenDimension.getHeight()/2 - frameDimension.getHeight()/2) - 20;
+		this.setLocation(xPosition, yPosition);
+	} //화면 중앙 표시 함수 끝
+}

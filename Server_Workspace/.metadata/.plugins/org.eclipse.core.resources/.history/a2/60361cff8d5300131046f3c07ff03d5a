@@ -1,0 +1,295 @@
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Vector;
+
+
+public class Server extends Thread{
+	//포트 번호
+	private final int PORT_NUMBER = 20000;
+	//메인 화면 대기실에 접속하는 학생 목록
+	private Vector<Student> studentList = null;
+	//채팅방 이름과 채팅방에 접속하는 학생 목록
+	private HashMap<String, Vector<Student>> chatRoomForStudent = null;
+	//채팅방 이름과 채팅방에 대한 정보
+	private HashMap<String, String[]> chatRoomInformation = null;
+	
+	//생성자
+	public Server(){
+		this.initializeMember();	//멤버 변수 초기화
+		try{
+			//해당 포트를 열고 대기
+			ServerSocket serverSocket = new ServerSocket(PORT_NUMBER);
+			//클라이언트의 접속을 무한대기
+			while(true){
+				//클라이언트의 요청이 들어왔을 때 소켓 생성
+				Socket socket = serverSocket.accept();
+//				Student student = new Student(socket, this);
+//				student.start();
+			}
+		}catch(Exception e){
+			System.out.println("서버 || 생성자 예외처리 : " + "에러");
+		}		
+	} //생성자 끝
+	
+	//멤버 변수 초기화
+	private void initializeMember(){
+		studentList = new Vector<Student>();
+		chatRoomForStudent = new HashMap<String, Vector<Student>>();
+		chatRoomInformation = new HashMap<String, String[]>();
+		System.out.println("서버 || 멤버 변수 초기화 함수 : " + "성공");
+	} //멤버 변수 초기화 함수 끝
+	
+	//접속하는 인원을 접속자 목록에 추가하고 대화창에 접속메시지 출력
+	public void addStudent(Student student){
+		studentList.add(student);				//메인화면 대기실에 접속하는 학생을 추가
+//		this.broadCast("대기실입장/" + student.alias);
+	}
+	
+	//방을 생성하였을 때 채팅방 목록에 방을 추가
+	public void addChatRoom(String chatRoomName){
+		chatRoomForStudent.put(chatRoomName, new Vector<Student>());
+	}
+	
+	//채팅방에 입장했을 때 방의 대화자리스트에 학생 추가 및 방의 제한 인원을 체크
+	public boolean addRoomStudent(Student student, String chatRoomName){
+		Vector<Student> studentInRoom = chatRoomForStudent.get(chatRoomName);
+		String[] chatRoomInformationArray = chatRoomInformation.get(chatRoomName);
+		
+		int numberLimit = Integer.parseInt(chatRoomInformationArray[1]);
+		//대화방 정원보다 방에 있는 대화자들의 수가 많거나 같다면
+		if(studentInRoom.size() >= numberLimit){
+//			student.sendMessage("JoinRoom/대화방 정원이 다 찼습니다.");
+			return true;
+		}else{
+			studentInRoom.add(student);
+			return false;
+		}
+	} //채팅방에 입장했을 때 방의 대화자리스트에 학생 추가 및 방의 제한 인원을 체크 함수 끝
+	
+	//메인화면 대기실 대화 목록에 메시지를 출력
+	public void broadCast(String message){
+		System.out.println("서버 || 브로드캐스트 : " + "성공");
+		//메인화면 대기실에 있는 모든 학생들에게 메시지 보여줌
+		for(Student student : studentList){
+//			student.sendMessage(message);
+		}
+	}
+	
+	//메인화면 대기실 접속자 목록을 대기실 리스트에 출력
+	public void broadCastStudentList(){
+		String message = "대기실학생목록/";
+		for(Student student : studentList){
+//			message += student.alias + "/";
+		}
+		this.broadCast(message);
+	}
+	
+	//접속해 있는 트정한 접속자에게 메시지 출력
+	public void broadCastOnlySomeone(String message){
+		String[] temp = message.split("/");
+		for(Student student : studentList){
+//			if(student.alias.equals(temp[3])){
+//				student.sendMessage(message);
+//			}
+		}
+		Iterator<Vector<Student>> iterator = chatRoomForStudent.values().iterator();
+		while(iterator.hasNext()){
+			for(Student student : iterator.next()){
+//				if(student.alias.equals(temp[3])){
+//					student.sendMessage(message);
+//				}
+			}
+		}
+	} //접속해 있는 트정한 접속자에게 메시지 출력 함수 끝
+	
+	//채팅방 안의 채팅창에 메시지 출력
+	public void broadCastChatRoom(String message, String chatRoomName){
+		Vector<Student> studentInRoom = chatRoomForStudent.get(chatRoomName);
+		if(studentInRoom == null){
+			return;
+		}
+		for(Student student : studentInRoom){
+//			student.sendMessage(message);
+		}
+	}
+	
+	//방에 입장해 있는 유저 목록을 방의 유저리스트에 출력
+	public void broadCastChatRoomStudentList(String chatRoomName){
+		Vector<Student> studentInRoom = chatRoomForStudent.get(chatRoomName);
+		if(studentInRoom == null){
+			return;
+		}
+		String message = "방접속자목록/";
+		for(Student student : studentInRoom){
+//			message += student.alias + "/";
+		}
+		this.broadCastChatRoom(message, chatRoomName);
+	}
+	
+	//생성되어 있는 채팅방의 리스트를 대화방 목록에 출력
+	public void broadCastChatRoomList(){
+		String message = "방목록/";
+		Iterator<String> iterator = chatRoomForStudent.keySet().iterator();
+		
+		while(iterator.hasNext()){
+			String room = iterator.next();
+			Vector<Student> currentStudent = chatRoomForStudent.get(room);
+			String[] informationOfRoom = chatRoomInformation.get(room);
+			
+			if(informationOfRoom[2] != null){
+				message += "[비번] " + room;
+			}
+			else{
+				message += room;
+			}
+			message += "(" + currentStudent.size() + "//" + informationOfRoom[1] + ")/";
+		}
+		this.broadCast(message);
+	} //생성되어 있는 채팅방의 리스트를 대화방 목록에 출력 함수 끝
+	
+	//방에 있는 특정 사람에게만 메시지 출력
+	public void broadCastOnlySomeoneInRoom(String message, String chatRoomName){
+		String[] temp = message.split("/");
+		Vector<Student> studentInRoom = chatRoomForStudent.get(chatRoomName);
+		
+		for(Student student : studentInRoom){
+//			if(student.alias.equals(temp[3])){
+//				student.sendMessage(message);
+//			}
+		}
+	}
+	
+	//접속해 있는 모든 접속자의 닉네임을 반환
+	public String getAllConnectedStudent(){
+		String message = "";
+		for(Student student : studentList){
+//			message += student.alias + "/";
+		}
+		Iterator<Vector<Student>> iterator = chatRoomForStudent.values().iterator();
+		while(iterator.hasNext()){
+			for(Student student : iterator.next()){
+//				message += student.alias + "/";
+			}
+		}
+		return message;
+	}
+	
+	//방장이 방장을 넘기지 않고 방을 빠져나갔을 경우 방장 권한을 그 다음 사람에게 넘기기 위해서 그 유저를 반환
+	public String getNextStudent(String chatRoomName){
+//		Vector<Student> studentInRoom = chatRoomForStudent.get(chatRoomName);
+//		return studentInRoom.get(1).alias;
+		return null;
+	}
+	
+	//현재 방에 접속해 있는 인원수를 반환
+	public int getChatRoomStudentNumber(String chatRoomName){
+		return chatRoomForStudent.get(chatRoomName).size();
+	}
+	
+	//어떤 방의 방장, 제한 인원, 비밀번호 등의 정보를 반환
+	public String[] getChatRoomInformation(String chatRoomName){
+		return chatRoomInformation.get(chatRoomName);
+	}
+	
+	//메인화면 대기실의 접속자를 방에 초대하기 위하여 대기실 접속자 목록을 출력
+	public void studentListForInvite(Student student, String chatRoomName){
+		String message = "대기방접속자목록/" + chatRoomName + "/";
+		for(Student studentElement : studentList){
+//			message += studentElement.alias + "/";
+		}
+//		student.sendMessage(message);
+	}
+	
+	//방장의 권한을 위임
+	public void giveGrant(String alias, String chatRoomName){
+		Vector<Student> studentInRoom = chatRoomForStudent.get(chatRoomName);
+		for(Student student : studentInRoom){
+//			student.isCaptain = false;
+//			if(student.alias.equals(alias)){
+//				student.isCaptain = true;
+//			}
+//			student.sendMessage("방장/" + student.isCaptain);
+		}
+	}
+	
+	//자신이 이미 접속해 있는지 체크
+	public boolean isConnected(String alias){
+		boolean isConnected = false;
+		for(Student student : studentList){
+//			if(alias.equals(student.alias)){
+//				isConnected = true;
+//			}
+		}
+		Iterator<String> iterator = chatRoomForStudent.keySet().iterator();
+		while(iterator.hasNext()){
+			Vector<Student> chatRoomStudent = chatRoomForStudent.get(iterator.next());
+			for(Student student : chatRoomStudent){
+//				if(alias.equals(student.alias)){
+//					isConnected = true;
+//				}
+			}
+		}
+		return isConnected;
+	} //자신이 이미 접속해 있는지 체크하는 함수 끝
+	
+	//프로그램 종료시 접속자를 대기실 접속자 목록에서 삭제 및 대기실 대화 목록에 퇴장메시지 출력
+	public void removeStudent(Student student){
+		studentList.remove(student);
+//		this.broadCast("대기실퇴장/" + student.alias);
+	}
+	
+	//방이 없어졌을 경우 방을 채팅방 목록에서 제거
+	public void removeRoom(String chatRoomName){
+		chatRoomForStudent.remove(chatRoomName);
+	}
+	
+	//방에서 대화 참가자가 퇴장했을 때 그 방의 유저 목록에서 유저를 제거
+	public void removeStudentInRoom(Student student, String chatRoomName){
+		Vector<Student> studentInRoom = chatRoomForStudent.get(chatRoomName);
+		studentInRoom.remove(student);
+	}
+	
+	//같은 이름의 방이 존재하는지 체크
+	public boolean chatRoomNameCheck(String chatRoomName){
+		Iterator<String> chatRoomList = chatRoomForStudent.keySet().iterator();
+		boolean isRoomExist = false;
+		while(chatRoomList.hasNext()){
+			if(chatRoomName.equals(chatRoomList.next())){
+				isRoomExist = true;
+				break;
+			}
+		}
+		return isRoomExist;
+	}
+	
+	//방에 접속해 있는 대화 참가자들의 목록을 출력
+	public void chatRoomStudentList(Student student, String chatRoomName){
+		Vector<Student> studentInRoom = chatRoomForStudent.get(chatRoomName);
+		String message = "방정보/";
+//		for(Student studentElement : studentInRoom){
+//			message += studentElement.alias + "/";
+//		}
+//		student.sendMessage(message);
+	}
+	
+	//방을 생성하는 사람에게 방장의 권한을 부여
+	public void setCaptain(String chatRoomName){
+		Vector<Student> studentInRoom = chatRoomForStudent.get(chatRoomName);
+		for(Student student : studentInRoom){
+//			student.sendMessage("방장/" + student.isCaptain);
+		}
+	}
+	
+	//방 생성 시 그 방의 정보를 셋팅
+	public void setRoomInformation(String chatRoomName, String captain, String numberLimit, String roomPassword){
+		chatRoomInformation.put(chatRoomName, new String[]{captain, numberLimit, roomPassword});
+	}
+	
+	//방에 입장하거나 퇴장할 때마다 방의 정보를 갱신
+	public void updateChatRoomInformation(String chatRoomName, String captain, String numberLimit, int currentStudent){
+		String message = "방정보갱신/" + chatRoomName + "/" + captain + "/" + numberLimit + "/" + currentStudent;
+		this.broadCastChatRoom(message, chatRoomName);
+	}
+}

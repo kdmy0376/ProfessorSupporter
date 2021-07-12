@@ -1,0 +1,39 @@
+package ScreenShot;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Vector;
+
+
+
+public class ImageServer extends Thread{
+	Vector<ImageGuest> guestlist;
+	ServerSocket serverSocket;
+	
+	//생성자
+	public ImageServer(){
+		guestlist = new Vector<ImageGuest>();
+		try {
+			serverSocket = new ServerSocket(20001);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void run(){
+		try {
+			while(true){
+				//클라이언트 대기
+				System.out.println("[교수 클라이언트] 클라이언트 대기중");
+				Socket socket = serverSocket.accept();
+				System.out.println("[교수 클라이언트] 클라이언트 접속");
+				
+				ImageGuest imageGuest = new ImageGuest(socket, this);
+				imageGuest.start();
+			}
+		} catch (IOException e) {
+			System.out.println("[이미지 서버] 생성자 에러");
+		}
+	}
+}

@@ -1,0 +1,20 @@
+package ScreenShot;
+
+import java.net.Socket;
+
+public class ImageGuest {
+	private ImageServer server;
+	ObjectInputStream objectInputStream;
+	//클라이언트의 소켓
+	public Socket s;
+	
+	public ImageGuest(Socket s, ImageServer server){
+		this.server = server;
+		this.s = s;
+		try{
+			objectInputStream = new ObjectInputStream(socket.getInputStream());
+		}catch(IOException e){
+			System.out.println("Guest constructor Error");
+		}
+	}
+}

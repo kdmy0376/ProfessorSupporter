@@ -1,0 +1,14 @@
+package Welcome;
+
+import javax.swing.JPanel;
+
+public class WelcomeProgram extends JPanel {
+
+	/**
+	 * Create the panel.
+	 */
+	public WelcomeProgram() {
+
+	}
+
+}

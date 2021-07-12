@@ -1,0 +1,11 @@
+package Main;
+
+import MainFrame.MainFrame;
+import Server.Server;
+
+public class ServerMain {
+	public static void main(String[] args) throws Exception{
+		new Server().start();
+		new MainFrame();
+	}
+}

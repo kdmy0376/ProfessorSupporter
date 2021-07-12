@@ -1,2 +1,3 @@
-# ProfessorSupporter
-This app provides UI and chat function to manager students who are in the class.
+# Professor Supporter PC JAVA Application
+2013.11.27. Graduation Work Sources
+With Swing, Awt, Swt

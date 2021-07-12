@@ -1,0 +1,39 @@
+package ScreenShot;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+import javax.imageio.ImageIO;
+
+import Controller.Manager;
+
+public class ImageServer extends Thread{
+	BufferedImage bufferedImage = null;
+	boolean check = false;
+	public void run(){
+		try {
+			ServerSocket serverSocket = new ServerSocket(20001);
+			while(true){
+				System.out.println("[교수 클라이언트] 클라이언트 대기중");
+				Socket socket = serverSocket.accept();
+				System.out.println("[교수 클라이언트] 클라이언트 접속");
+				ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+				System.out.println("스트림 생성");
+				
+				bufferedImage = ImageIO.read(objectInputStream);
+				System.out.println("버퍼 이미지 가져오기 성공");
+				if(check == false){
+					Manager.CAPTUREDSCREEN.setVisible(true);
+					check = true;
+				}
+				Manager.CAPTUREDSCREEN.showScreenShot(bufferedImage);
+				System.out.println("캡쳐된 화면 표시 완료");
+			}
+		} catch (IOException e) {
+			System.out.println("[이미지 서버] 생성자 에러");
+		}
+	}
+}

@@ -1,0 +1,14 @@
+package Delete;
+import javax.swing.JPanel;
+
+
+public class DeleteForm extends JPanel {
+
+	/**
+	 * Create the panel.
+	 */
+	public DeleteForm() {
+
+	}
+
+}

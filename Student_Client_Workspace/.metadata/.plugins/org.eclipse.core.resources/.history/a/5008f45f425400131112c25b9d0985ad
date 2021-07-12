@@ -1,0 +1,19 @@
+package Main;
+
+import javax.swing.*;
+
+import Communication.Transit;
+import Controller.Manager;
+
+public class ClientMain{
+	public static void main(String[] args){
+		try{
+			new Transit().start();						//서버와 통신하는 쓰레드 시작
+			new SplashScreen());		//로딩 화면 보이기
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(Manager.LOGINFORM, "서버와 연결이 되지 않습니다.", 
+					"Connection Error", JOptionPane.WARNING_MESSAGE);
+			System.exit(0);
+		}
+	}
+}

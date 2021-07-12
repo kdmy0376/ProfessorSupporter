@@ -1,0 +1,14 @@
+package MainScreen;
+
+import javax.swing.JPanel;
+
+public class ComputerScreen extends JPanel {
+
+	/**
+	 * Create the panel.
+	 */
+	public ComputerScreen() {
+
+	}
+
+}

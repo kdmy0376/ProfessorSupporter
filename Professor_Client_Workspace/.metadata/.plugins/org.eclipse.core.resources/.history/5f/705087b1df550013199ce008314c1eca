@@ -1,0 +1,14 @@
+package Join;
+
+import javax.swing.JPanel;
+
+public class mainJoinForm extends JPanel {
+
+	/**
+	 * Create the panel.
+	 */
+	public mainJoinForm() {
+
+	}
+
+}

@@ -1,0 +1,67 @@
+package MainFrame;
+public class Member{
+	//회원의 아이디
+	private String id;
+	
+	//회원의 이름
+	private String name;
+	
+	//회원의 비밀번호
+	private String pw;
+	
+	//회원의 닉네임
+	private String alias;
+	
+	//회원의 비밀번호
+	private String tel;
+
+	//회원의 아이디 세팅하는 메서드
+	public void setId(String id){	
+		this.id = id;	
+	}
+	
+	//회원의 이름을 세팅하는 메서드
+	public void setName(String name){
+		this.name = name;
+	}
+	
+	//회원의 비밀번호를 세팅하는 메서드
+	public void setPw(String pw){	
+		this.pw = pw;	
+	}
+	
+	//회원의 닉네임을 세팅하는 메서드
+	public void setAlias(String alias){	
+		this.alias = alias;	
+	}
+	
+	//회원의 전화번호를 세팅하는 메서드
+	public void setTel(String tel){	
+		this.tel = tel;
+	}
+
+	//회원의 아이디를 얻는 메서드
+	public String getId(){	
+		return id;	
+	}
+	
+	//회원의 이름을 얻는 메서드
+	public String getName(){
+		return name;
+	}
+	
+	//회원의 비밀번호를 얻는 메서드
+	public String getPw(){	
+		return pw;
+	}
+	
+	//회원의 닉네임을 얻는 메서드
+	public String getAlias(){	
+		return alias;	
+	}
+	
+	//회원의 전화번호를 얻는 메서
+	public String getTel(){	
+		return tel;	
+	}
+}

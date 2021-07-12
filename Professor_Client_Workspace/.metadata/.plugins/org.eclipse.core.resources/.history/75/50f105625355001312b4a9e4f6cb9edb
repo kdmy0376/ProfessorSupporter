@@ -1,0 +1,37 @@
+package ScreenShot;
+
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+
+import javax.swing.JFrame;
+
+public class CapturedScreen extends JFrame{
+	private static final long serialVersionUID = 1L;
+	Image img = null;
+	BufferedImage bufImage = null;
+	
+	//持失切
+	public CapturedScreen(BufferedImage bufImage) {
+		this.bufImage = bufImage;
+		this.setSize(700,700);
+		this.setVisible(true);
+		int w = this.getWidth();
+		int h = this.getHeight();
+		this.img = bufImage.getScaledInstance(w, h, Image.SCALE_DEFAULT);
+		this.drawImage(img, w, h);
+	} //持失切 魁
+	
+	private void drawImage(Image img, int x, int y) {
+		Graphics g = this.getGraphics();
+		g.drawImage(img, 0, 0, x, y, this);
+		this.paint(g);
+		this.repaint();
+	}
+	
+	public void paint(Graphics g) {
+		if (this.img != null) {
+			g.drawImage(this.img, 0, 0, this.img.getWidth(this), this.img.getHeight(this), this);
+		}
+	}
+}

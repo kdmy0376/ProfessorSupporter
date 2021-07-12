@@ -1,0 +1,329 @@
+package Join;
+
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.SystemColor;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.border.EtchedBorder;
+
+public class mainJoinForm extends JPanel {
+
+	/**
+	 * Create the panel.
+	 */
+	public mainJoinForm() {
+
+	}
+	//회원 가입 양식 생성
+	private void createJoinForm(){
+		//아이디
+		JPanel idLabelPanel = new JPanel();
+		idLabelPanel.setBackground(SystemColor.inactiveCaption);
+		idLabelPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		idLabelPanel.setBounds(12, 73, 132, 32);
+		joinFormPanel.add(idLabelPanel);
+		idLabelPanel.setLayout(null);
+
+		JLabel idLabel = new JLabel("아이디");
+		idLabel.setBounds(12, 10, 57, 15);
+		idLabelPanel.add(idLabel);
+
+		//비밀번호
+		JPanel passwordLabelPanel = new JPanel();
+		passwordLabelPanel.setBackground(SystemColor.inactiveCaption);
+		passwordLabelPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		passwordLabelPanel.setLayout(null);
+		passwordLabelPanel.setBounds(12, 104, 132, 32);
+		joinFormPanel.add(passwordLabelPanel);
+
+		JLabel passwordLabel = new JLabel("비밀번호");
+		passwordLabel.setBounds(12, 10, 57, 15);
+		passwordLabelPanel.add(passwordLabel);
+
+		//비밀번호 확인
+		JPanel passwordCheckLabelPanel = new JPanel();
+		passwordCheckLabelPanel.setBackground(SystemColor.inactiveCaption);
+		passwordCheckLabelPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		passwordCheckLabelPanel.setLayout(null);
+		passwordCheckLabelPanel.setBounds(12, 135, 132, 32);
+		joinFormPanel.add(passwordCheckLabelPanel);
+
+		JLabel passwordCheckLabel = new JLabel("비밀번호 확인");
+		passwordCheckLabel.setBounds(12, 10, 89, 15);
+		passwordCheckLabelPanel.add(passwordCheckLabel);
+
+		//이름
+		JPanel nameLabelPanel = new JPanel();
+		nameLabelPanel.setBackground(SystemColor.inactiveCaption);
+		nameLabelPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		nameLabelPanel.setLayout(null);
+		nameLabelPanel.setBounds(12, 166, 132, 32);
+		joinFormPanel.add(nameLabelPanel);
+
+		JLabel nameLabel = new JLabel("이름");
+		nameLabel.setBounds(12, 10, 57, 15);
+		nameLabelPanel.add(nameLabel);
+
+		//이메일
+		JPanel emailLabelPanel = new JPanel();
+		emailLabelPanel.setBackground(SystemColor.inactiveCaption);
+		emailLabelPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		emailLabelPanel.setLayout(null);
+		emailLabelPanel.setBounds(12, 197, 132, 32);
+		joinFormPanel.add(emailLabelPanel);
+
+		JLabel emailLabel = new JLabel("E-mail");
+		emailLabel.setBounds(12, 10, 57, 15);
+		emailLabelPanel.add(emailLabel);
+
+		//성별
+		JPanel sexLabelPanel = new JPanel();
+		sexLabelPanel.setBackground(SystemColor.inactiveCaption);
+		sexLabelPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		sexLabelPanel.setLayout(null);
+		sexLabelPanel.setBounds(12, 228, 132, 32);
+		joinFormPanel.add(sexLabelPanel);
+
+		JLabel sexLabel = new JLabel("성별");
+		sexLabel.setBounds(12, 10, 57, 15);
+		sexLabelPanel.add(sexLabel);
+
+		//홈페이지
+		JPanel homepageLabelPanel = new JPanel();
+		homepageLabelPanel.setBackground(SystemColor.inactiveCaption);
+		homepageLabelPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		homepageLabelPanel.setLayout(null);
+		homepageLabelPanel.setBounds(12, 259, 132, 32);
+		joinFormPanel.add(homepageLabelPanel);
+
+		JLabel homepageLabel = new JLabel("홈페이지");
+		homepageLabel.setBounds(12, 10, 57, 15);
+		homepageLabelPanel.add(homepageLabel);
+
+		//전화번호
+		JPanel phoneLabelPanel = new JPanel();
+		phoneLabelPanel.setBackground(SystemColor.inactiveCaption);
+		phoneLabelPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		phoneLabelPanel.setLayout(null);
+		phoneLabelPanel.setBounds(12, 290, 132, 32);
+		joinFormPanel.add(phoneLabelPanel);
+
+		JLabel phoneLabel = new JLabel("전화번호");
+		phoneLabel.setBounds(12, 10, 57, 15);
+		phoneLabelPanel.add(phoneLabel);
+
+		//핸드폰 번호
+		JPanel cellPhoneLabelPanel = new JPanel();
+		cellPhoneLabelPanel.setBackground(SystemColor.inactiveCaption);
+		cellPhoneLabelPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		cellPhoneLabelPanel.setLayout(null);
+		cellPhoneLabelPanel.setBounds(12, 321, 132, 32);
+		joinFormPanel.add(cellPhoneLabelPanel);
+
+		JLabel cellPhoneLabel = new JLabel("핸드폰 번호");
+		cellPhoneLabel.setBounds(12, 10, 72, 15);
+		cellPhoneLabelPanel.add(cellPhoneLabel);
+
+		//주소
+		JPanel addressLabelPanel = new JPanel();
+		addressLabelPanel.setBackground(SystemColor.inactiveCaption);
+		addressLabelPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		addressLabelPanel.setLayout(null);
+		addressLabelPanel.setBounds(12, 352, 132, 32);
+		joinFormPanel.add(addressLabelPanel);
+
+		JLabel addressLabel = new JLabel("주소");
+		addressLabel.setBounds(12, 10, 57, 15);
+		addressLabelPanel.add(addressLabel);
+
+		//자기소개
+		JPanel introductionLabelPanel = new JPanel();
+		introductionLabelPanel.setBackground(SystemColor.inactiveCaption);
+		introductionLabelPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		introductionLabelPanel.setLayout(null);
+		introductionLabelPanel.setBounds(12, 383, 132, 77);
+		joinFormPanel.add(introductionLabelPanel);
+
+		JLabel introductionLabel = new JLabel("자기소개");
+		introductionLabel.setBounds(12, 31, 57, 15);
+		introductionLabelPanel.add(introductionLabel);
+
+		//아이디 입력란
+		JPanel idTextFieldPanel = new JPanel();
+		idTextFieldPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		idTextFieldPanel.setBounds(144, 73, 422, 32);
+		joinFormPanel.add(idTextFieldPanel);
+		idTextFieldPanel.setLayout(null);
+
+		idTextField = new JTextField();
+		idTextField.setBounds(6, 5, 116, 21);
+		idTextFieldPanel.add(idTextField);
+		idTextField.setColumns(10);
+
+		//중복확인 버튼
+		duplicationCheckButton = new JButton("중복확인");
+		duplicationCheckButton.setBounds(134, 4, 91, 23);
+		idTextFieldPanel.add(duplicationCheckButton);
+
+		//회원가입 배너 이미지
+		JPanel joinBannerPanel = new JPanel();
+		joinBannerPanel.setBackground(SystemColor.inactiveCaption);
+		joinBannerPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		joinBannerPanel.setBounds(0, 0, 578, 57);
+		joinFormPanel.add(joinBannerPanel);
+		joinBannerPanel.setLayout(null);
+
+		JLabel joinBannerLabel = new JLabel("Join"); 
+		joinBannerLabel.setFont(new Font("Miriam", Font.BOLD, 42));
+		joinBannerLabel.setBounds(12, 10, 181, 37);
+		joinBannerPanel.add(joinBannerLabel);
+
+		//비밀번호 입력란
+		JPanel passwordTextFieldPanel = new JPanel();
+		passwordTextFieldPanel.setLayout(null);
+		passwordTextFieldPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		passwordTextFieldPanel.setBounds(144, 104, 422, 32);
+		joinFormPanel.add(passwordTextFieldPanel);
+
+		passwordTextField = new JPasswordField();
+		passwordTextField.setBounds(6, 5, 116, 21);
+		passwordTextFieldPanel.add(passwordTextField);
+
+		//비밀번호 확인 입력란
+		JPanel passwordCheckTextFieldPanel = new JPanel();
+		passwordCheckTextFieldPanel.setLayout(null);
+		passwordCheckTextFieldPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		passwordCheckTextFieldPanel.setBounds(144, 135, 422, 32);
+		joinFormPanel.add(passwordCheckTextFieldPanel);
+
+		passwordCheckTextField = new JPasswordField();
+		passwordCheckTextField.setBounds(6, 5, 116, 21);
+		passwordCheckTextFieldPanel.add(passwordCheckTextField);
+
+		//이름 입력란
+		JPanel nameTextFieldPanel = new JPanel();
+		nameTextFieldPanel.setLayout(null);
+		nameTextFieldPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		nameTextFieldPanel.setBounds(144, 166, 422, 32);
+		joinFormPanel.add(nameTextFieldPanel);
+
+		nameTextField = new JTextField();
+		nameTextField.setColumns(10);
+		nameTextField.setBounds(6, 5, 116, 21);
+		nameTextFieldPanel.add(nameTextField);
+
+		//이메일 입력란
+		JPanel emailTextFieldPanel = new JPanel();
+		emailTextFieldPanel.setLayout(null);
+		emailTextFieldPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		emailTextFieldPanel.setBounds(144, 197, 422, 32);
+		joinFormPanel.add(emailTextFieldPanel);
+
+		emailTextField = new JTextField();
+		emailTextField.setColumns(10);
+		emailTextField.setBounds(6, 5, 220, 21);
+		emailTextFieldPanel.add(emailTextField);
+
+		//성별 선택란
+		JPanel sexComboBoxPanel = new JPanel();
+		sexComboBoxPanel.setLayout(null);
+		sexComboBoxPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		sexComboBoxPanel.setBounds(144, 228, 422, 32);
+		joinFormPanel.add(sexComboBoxPanel);
+
+		String[] sex = {"남", "여"};
+		sexComboBox = new JComboBox<String>(sex);
+		sexComboBox.setBounds(6, 5, 60, 21);
+		sexComboBoxPanel.add(sexComboBox);
+
+		//홈페이지 입력란
+		JPanel homepageTextFieldPanel = new JPanel();
+		homepageTextFieldPanel.setLayout(null);
+		homepageTextFieldPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		homepageTextFieldPanel.setBounds(144, 259, 422, 32);
+		joinFormPanel.add(homepageTextFieldPanel);
+
+		homepageTextField = new JTextField();
+		homepageTextField.setColumns(10);
+		homepageTextField.setBounds(6, 5, 221, 21);
+		homepageTextFieldPanel.add(homepageTextField);
+
+		//전화번호 입력란
+		JPanel phoneTextFieldPanel = new JPanel();
+		phoneTextFieldPanel.setLayout(null);
+		phoneTextFieldPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		phoneTextFieldPanel.setBounds(144, 290, 422, 32);
+		joinFormPanel.add(phoneTextFieldPanel);
+
+		phoneTextField = new JTextField();
+		phoneTextField.setColumns(10);
+		phoneTextField.setBounds(6, 5, 116, 21);
+		phoneTextFieldPanel.add(phoneTextField);
+
+		//핸드폰 번호 입력란
+		JPanel cellPhoneTextFieldPanel = new JPanel();
+		cellPhoneTextFieldPanel.setLayout(null);
+		cellPhoneTextFieldPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		cellPhoneTextFieldPanel.setBounds(144, 321, 422, 32);
+		joinFormPanel.add(cellPhoneTextFieldPanel);
+
+		cellPhoneTextField = new JTextField();
+		cellPhoneTextField.setColumns(10);
+		cellPhoneTextField.setBounds(6, 5, 116, 21);
+		cellPhoneTextFieldPanel.add(cellPhoneTextField);
+
+		//주소 입력란
+		JPanel addressTextFieldPanel = new JPanel();
+		addressTextFieldPanel.setLayout(null);
+		addressTextFieldPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		addressTextFieldPanel.setBounds(144, 352, 422, 32);
+		joinFormPanel.add(addressTextFieldPanel);
+
+		addressField = new JTextField();
+		addressField.setColumns(10);
+		addressField.setBounds(6, 5, 404, 21);
+		addressTextFieldPanel.add(addressField);
+
+		//자기소개 입력란
+		JPanel introductionTextAreaPanel = new JPanel();
+		introductionTextAreaPanel.setLayout(null);
+		introductionTextAreaPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		introductionTextAreaPanel.setBounds(144, 383, 422, 77);
+		joinFormPanel.add(introductionTextAreaPanel);
+
+		JScrollPane introductionScrollPane = new JScrollPane();
+		introductionScrollPane.setBounds(6, 10, 404, 58);
+		introductionTextAreaPanel.add(introductionScrollPane);
+		introductionScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+		introductionTextArea = new JTextArea(); 
+		introductionScrollPane.setViewportView(introductionTextArea);
+		introductionTextArea.setWrapStyleWord(true);
+		introductionTextArea.setLineWrap(true);
+
+		//버튼 패널
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setBounds(0, 470, 578, 36);
+		joinFormPanel.add(buttonPanel);
+		buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		//확인 버튼
+		okButtonInJoinForm = new JButton("확인");
+		buttonPanel.add(okButtonInJoinForm);
+		//초기화 버튼
+		initializeButton = new JButton("초기화");
+		buttonPanel.add(initializeButton);
+		//취소 버튼
+		cancelButton = new JButton("취소"); 
+		buttonPanel.add(cancelButton);
+	} //회원 가입 양식 생성 함수 끝
+
+}

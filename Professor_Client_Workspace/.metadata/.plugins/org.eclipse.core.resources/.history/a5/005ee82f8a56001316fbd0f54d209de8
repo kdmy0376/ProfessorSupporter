@@ -1,0 +1,57 @@
+package ScreenShot;
+
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.net.Socket;
+
+import javax.imageio.ImageIO;
+
+import Controller.Manager;
+
+public class ImageGuest extends Thread{
+	private ImageServer server = null;
+	BufferedReader bufferedReader = null;
+	ObjectInputStream objectInputStream = null;
+	//클라이언트의 소켓
+	public Socket socket = null;
+	
+	boolean check = false;
+	BufferedImage bufferedImage = null;
+	
+	//생성자
+	public ImageGuest(Socket socket, ImageServer server){
+		this.socket = socket;
+		this.server = server;
+		try{
+			bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			objectInputStream = new ObjectInputStream(socket.getInputStream());
+			System.out.println("스트림 생성");
+		}catch(IOException e){
+			System.out.println("이미지 게스트 생성자 에러");
+		}
+	}
+	//이미지 클라이언트로부터 들어온 메시지 처리
+	public void run(){
+		try{
+			String line = null;
+			while((line = bufferedReader.readLine()) != null){
+				System.out.println("이미지 클라이언트로부터 들어온 메시지 : " +line);
+			}
+		}catch(Exception e){
+			System.out.println("Guest Exception");
+		}
+	}
+
+//	bufferedImage = ImageIO.read(objectInputStream);
+//	System.out.println("버퍼 이미지 가져오기 성공");
+//	
+//	if(check == false){
+//		Manager.CAPTUREDSCREEN.setVisible(true);
+//		check = true;
+//	}
+//	Manager.CAPTUREDSCREEN.showScreenShot(bufferedImage);
+//	System.out.println("캡쳐된 화면 표시 완료");
+}

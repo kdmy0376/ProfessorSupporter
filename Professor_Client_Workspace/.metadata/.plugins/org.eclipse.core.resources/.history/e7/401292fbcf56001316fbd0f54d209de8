@@ -1,0 +1,14 @@
+package Search;
+
+import javax.swing.JPanel;
+
+public class SearchForm extends JPanel {
+
+	/**
+	 * Create the panel.
+	 */
+	public SearchForm() {
+
+	}
+
+}

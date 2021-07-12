@@ -1,0 +1,9 @@
+
+public class ServerMain {
+	public static void main(String[] args){
+		Manager.SPLASHSCREEN.setVisible(true);
+//		LoginForm lf = Manager.LOGINFORM;
+//		//·Î±×ÀÎÆû º¸¿©ÁÜ
+//		lf.setVisible(true);
+	}
+}

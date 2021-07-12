@@ -1,0 +1,72 @@
+package ScreenShot;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.*;
+
+
+public class CaptureScreen {//이미지 비교하는 클래스
+	protected BufferedImage img1 = null;
+	protected BufferedImage img2 = null;
+	protected int dx = 8;  //이미지를 나눌 가로 크기
+	protected int dy = 6;  //이미지를 나눌 세로 크기
+	protected int parameter1 = 5;  //민감도
+	protected int parameter2 = 10;
+	protected boolean match = true;
+
+	public static BufferedImage ToBufImage(Image img) {//버퍼이미지로 바꾸는 메소드
+		BufferedImage bi = new BufferedImage(340, 240, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2 = bi.createGraphics();
+		g2.drawImage(img,null,null);
+		return bi;
+	}
+
+	public CaptureScreen() {//생성자
+		ImgCmp ic = new ImgCmp(in_img, in_img2);  //두 이미지를 넘겨준다
+		compare();  //비교 시작
+		System.out.println("Match: " + ic.match());  //매치 여부 알려줌
+
+		if(ic.match()==false){  //이미지가 다르면
+			//에러클래스 생성
+		}
+		this.img1 = img1;
+		this.img2 = img2;
+	}
+
+	public void compare() {//비교 함수
+		img1 = ToBufImage(GrayFilter.createDisabledImage(img1));//그레이필터씌움
+		img2 = ToBufImage(GrayFilter.createDisabledImage(img2));
+
+		int bx = (int)(img1.getWidth() / dx);  //dx(x조각 너비)로 나눈 개수
+		int by = (int)(img1.getHeight() / dy);  //dy(y조각 너비)로 나눈 개수
+
+		System.out.println("start");  //시작(디버깅용)
+
+		for (int y = 0; y < dy; y++) { //모든 블럭 검사
+			for (int x = 0; x < dx; x++) {
+				int b1 = Bright(img1.getSubimage(x*bx, y*by, bx - 1, by - 1));
+				int b2 = Bright(img2.getSubimage(x*bx, y*by, bx - 1, by - 1));
+				int diff = Math.abs(b1 - b2);  //이미지 블럭이 서로 다르면
+				if (diff >parameter1) {   //다른게 민감도 이상일때
+					this.match = false;  //false로 바꾼다.
+				}
+			}
+		}
+		System.out.println("end");  //끝(디버깅용)
+	}
+
+	protected int Bright(BufferedImage img) {   //그레이 필터 씌워서 밝기 비교
+		Raster r = img.getData();
+		int total = 0;
+		for (int y = 0; y < r.getHeight(); y++) { //블럭 하나에 대하여
+			for (int x = 0; x < r.getWidth(); x++) {
+				total += r.getSample(r.getMinX() + x, r.getMinY() + y, 0); //샘플채취
+			}
+		}
+		return (int)(total / ((r.getWidth()/parameter2)*(r.getHeight()/parameter2)));  //
+	}
+
+	public boolean match() {
+		return this.match;  //매치 상황 리턴 메소드
+	}
+}
+

@@ -1,0 +1,18 @@
+import javax.swing.*;
+
+public class Chat{
+	public static void main(String[] args){
+		try{
+//			//서버와 통신하는 쓰레드 시작
+//			new Transit().start();
+//			Login_Form lf = Manager.LOGINFORM;
+//			//로그인폼 보여줌
+//			lf.setVisible(true);
+			new MainFrame().setVisible(true);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(Manager.LOGINFORM, "서버와 연결이 되지 않습니다.", 
+					"Connection Error", JOptionPane.WARNING_MESSAGE);
+			System.exit(0);
+		}
+	}
+}

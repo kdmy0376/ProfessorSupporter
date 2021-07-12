@@ -1,0 +1,8 @@
+
+public class ServerMain {
+	public static void main(String[] args){
+		LoginForm lf = Manager.LOGINFORM;
+		//·Î±×ÀÎÆû º¸¿©ÁÜ
+		lf.setVisible(true);
+	}
+}

@@ -1,0 +1,680 @@
+package MainScreen;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Toolkit;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JToolBar;
+import javax.swing.UIManager;
+import java.awt.SystemColor;
+import java.awt.BorderLayout;
+import javax.swing.JLabel;
+import java.awt.GridLayout;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+
+import javax.swing.ImageIcon;
+import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JToggleButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.util.Vector;
+
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.BoxLayout;
+
+import Controller.Manager;
+import FileTransfer.SendFile;
+import FontDialog.FontDialog;
+
+
+public class MainFrame extends JFrame implements ActionListener{
+	private static final long serialVersionUID = 1L;
+	private JMenu fileMenu = null;
+	private JPanel contentPane = null;
+	private ImageIcon image = null;
+	private JMenuItem informationMenuItem = null; 	
+	private JMenuItem exitMenuItem = null;			
+	private JCheckBoxMenuItem showStatusBarCheckMenuItem = null; 
+	private JToggleButton showStudentListToggleButton = null;
+	private JToggleButton showChatListToggleButton = null;
+	private JPanel mainWestPanel = null;
+	private JPanel statusBarPanel = null;
+	private JLabel statusBarLabel = null;
+	private JPanel toolBarPanel = null;
+	private JPanel mainCenterPanel = null;
+	private JCheckBoxMenuItem showStudentListCheckMenuItem = null;
+	private JCheckBoxMenuItem showChatListCheckMenuItem = null;
+	private JCheckBoxMenuItem showToolBarCheckMenuItem = null;
+	private JMenuItem enterRoomMenuItem;
+	private JMenuItem privateChatMenuItem;
+	private JMenuItem sendNoteMenuItem;
+	private JMenuItem logoutMenuItem;
+
+	private JPopupMenu jpm_waitRoom_popupforIds;
+	private JMenuItem mi_waitRoom_privatechat;
+	private JMenuItem mi_waitRoom_sendnote;
+	private JMenuItem mi_waitRoom_sendFile;
+
+	private JButton sendFileButton;
+	private JButton sendNoteButton;
+	private JButton doChattingButton;
+	private JButton sendEmailButton;
+	private JMenu chatMenu;
+	private JMenuItem createChatRoomMenuItem;
+	private JMenu mainChatFormMenu;
+	private JMenuItem changeFontMenuItem;
+	private JMenuItem changeColorMenuItem;
+	private JMenu sendMenu;
+	private JMenuItem sendFileMenuItem; 
+	private JMenuItem sendMailMenuItem;
+	private JMenu networkMenu;
+	private JMenuItem showCurrentIpAddressMenuItem;
+
+	public JComboBox<String> connectedStudentComboBox = null;
+	public JTextPane contentOfChattingTextPane = null;
+	public JList<String> connectedStudentList = null;
+	public JList<String> chatRoomList = null;
+	public String roomname = null;
+	public JTextField inputTextField = null;
+	private JList<String> informationOfStudentList = null;
+	private Manager manager = new Manager();
+	
+	private JButton createChatRoomButton = null;
+	private JButton sendTextButton = null;
+
+	//폰트 이름
+	public String fontName;
+	//폰트 크기
+	public int fontSize;
+	//폰트 색깔
+	public int fontColor;
+	//귓말 받을 유저
+	private String toUser;
+	//선택한 유저
+	public String selectedId;
+
+	private Vector<String> userlist = null;
+	
+	//생성자
+	public MainFrame() {
+		this.setIconImage(new ImageIcon(".\\image\\학사모학생.png").getImage());
+		this.setTitle("Professor Supporter Client");
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setSize(731, 500); 	//프레임 사이즈
+		this.displayCenter();		//프레임 위치
+		this.createMenu();			//메뉴 생성
+		this.initializeMember();	//멤버 변수 초기화
+		this.createToolBar();		//툴바 생성
+		this.mountEventHandler();	//이벤트 처리기 등록
+		//this.excuteHiddenMode();	//패널 안보이게 설정
+
+	} //생성자 끝
+
+	//화면 중앙 표시
+	private void displayCenter(){
+		//화면의 크기
+		Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();	
+		//프레임의 크기
+		Dimension frameDimension = this.getSize();
+		//화면 넓이/2 - 프레임 넓이/2
+		int xPosition = (int)(screenDimension.getWidth()/2 - frameDimension.getWidth()/2);
+		//화면 높이/2 - 프레임 높이/2
+		int yPosition = (int)(screenDimension.getHeight()/2 - frameDimension.getHeight()/2) - 20;
+		this.setLocation(xPosition, yPosition);
+	} //화면 중앙 표시 함수 끝
+
+	//멤버 변수 초기화 및 설정
+	private void initializeMember(){
+		contentPane = new JPanel();		//컨텐츠 영역을 가져옴
+		//		폰트 관련 기본적인 세팅
+		fontName = "바탕";
+		fontSize = 12;
+		fontColor = Color.BLACK.getRGB();//this.jtp_waitRoom_chat.getForeground().getRGB();
+		toUser = "모두에게";
+		userlist = new Vector<String>();
+		//		기본적으로 모두에게 메시지를 보낼 수 있게 추가
+		userlist.add("모두에게");
+		setContentPane(contentPane);
+	} //멤버 변수 초기화 및 설정 함수 끝
+
+	//메뉴 생성
+	private void createMenu(){
+
+		jpm_waitRoom_popupforIds 	= new JPopupMenu();
+		mi_waitRoom_sendnote		= new JMenuItem("쪽지보내기");  
+		mi_waitRoom_privatechat		= new JMenuItem("1:1대화");   
+		mi_waitRoom_sendFile		= new JMenuItem("파일 보내기"); 
+
+		//		팝업 메뉴에 메뉴아이템 집어 넣기
+		jpm_waitRoom_popupforIds.add(mi_waitRoom_privatechat);
+		jpm_waitRoom_popupforIds.add(mi_waitRoom_sendnote);
+		jpm_waitRoom_popupforIds.add(mi_waitRoom_sendFile);
+
+
+		//메뉴바 생성
+		JMenuBar menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+
+		//파일 메뉴
+		fileMenu = new JMenu("파일");
+		menuBar.add(fileMenu);
+
+		logoutMenuItem			= new JMenuItem("로그아웃");
+		fileMenu.add(logoutMenuItem);
+		fileMenu.addSeparator();
+		fileMenu.addSeparator();
+		exitMenuItem = new JMenuItem("프로그램 종료");
+		exitMenuItem.setIcon(new ImageIcon(".\\image\\종료(23x20).jpg"));
+		fileMenu.add(exitMenuItem);
+
+		chatMenu = new JMenu("채팅");
+		menuBar.add(chatMenu);
+
+		createChatRoomMenuItem = new JMenuItem("대화방 만들기");
+		createChatRoomMenuItem.setIcon(new ImageIcon(".\\image\\방만들기메뉴(23x20).jpg"));
+		chatMenu.add(createChatRoomMenuItem);
+		enterRoomMenuItem			= new JMenuItem("대화방 입장하기");
+		chatMenu.add(enterRoomMenuItem);
+		privateChatMenuItem			= new JMenuItem("1:1대화");
+		chatMenu.add(privateChatMenuItem);
+
+		chatMenu.addSeparator();
+
+		mainChatFormMenu = new JMenu("메인 대화방 서식");
+		chatMenu.add(mainChatFormMenu);
+
+		changeFontMenuItem = new JMenuItem("글꼴 바꾸기");
+		mainChatFormMenu.add(changeFontMenuItem);
+
+		changeColorMenuItem = new JMenuItem("색상 바꾸기");
+		mainChatFormMenu.add(changeColorMenuItem);
+
+		chatMenu.addSeparator();
+		chatMenu.addSeparator();
+
+		sendNoteMenuItem		= new JMenuItem("쪽지보내기");
+		sendNoteMenuItem.setIcon(new ImageIcon(".\\image\\쪽지보내기메뉴(23x20).jpg"));
+
+		chatMenu.add(sendNoteMenuItem);
+
+		sendMenu = new JMenu("전송");
+		menuBar.add(sendMenu);
+
+		sendFileMenuItem = new JMenuItem("파일 보내기");
+		sendMenu.add(sendFileMenuItem);
+
+		sendMenu.addSeparator();
+		sendMenu.addSeparator();
+
+		sendMailMenuItem = new JMenuItem("이메일 보내기");
+		sendMenu.add(sendMailMenuItem);
+
+		//보기 메뉴
+		JMenu viewMenu = new JMenu("보기");
+		menuBar.add(viewMenu);
+
+		showToolBarCheckMenuItem = new JCheckBoxMenuItem("툴바 보이기");
+		viewMenu.add(showToolBarCheckMenuItem);
+
+		viewMenu.addSeparator();
+
+		showStudentListCheckMenuItem = new JCheckBoxMenuItem("접속한 학생 목록 보이기");
+		viewMenu.add(showStudentListCheckMenuItem);
+
+		showChatListCheckMenuItem = new JCheckBoxMenuItem("대화방 목록 보이기");
+		viewMenu.add(showChatListCheckMenuItem); 
+
+		viewMenu.addSeparator();
+
+		showStatusBarCheckMenuItem = new JCheckBoxMenuItem("상태표시바 보이기");
+		viewMenu.add(showStatusBarCheckMenuItem);
+
+		networkMenu = new JMenu("네트워크");
+		menuBar.add(networkMenu);
+
+		showCurrentIpAddressMenuItem = new JMenuItem("현재 PC의 IP주소 보이기");
+		networkMenu.add(showCurrentIpAddressMenuItem);
+
+		//도움말 메뉴
+		JMenu helpMenu = new JMenu("도움말");
+		menuBar.add(helpMenu);
+		//정보 메뉴
+		informationMenuItem = new JMenuItem("프로그램 정보");
+		informationMenuItem.setIcon(new ImageIcon(".\\image\\정보(23x20).jpg"));
+		helpMenu.add(informationMenuItem);
+
+	} //메뉴 생성 함수 끝
+
+	//이벤트 처리기 등록
+	private void mountEventHandler(){
+		sendTextButton.addActionListener(this);
+		informationMenuItem.addActionListener(this);
+		exitMenuItem.addActionListener(this);
+		showStatusBarCheckMenuItem.addActionListener(this);
+		showChatListToggleButton.addActionListener(this);
+		showStudentListToggleButton.addActionListener(this);
+		showToolBarCheckMenuItem.addActionListener(this);
+		showChatListCheckMenuItem.addActionListener(this);
+		showStudentListCheckMenuItem.addActionListener(this);
+
+		//		이벤트 등록
+		enterRoomMenuItem.addActionListener(this);
+		privateChatMenuItem.addActionListener(this);
+		sendNoteMenuItem.addActionListener(this);
+		logoutMenuItem.addActionListener(this);
+
+		doChattingButton.addActionListener(this);
+		sendNoteButton.addActionListener(this);
+		sendFileButton.addActionListener(this);
+
+		//		팝업 메뉴를 띄우기 위한 유저 리스트에 대한 이벤트
+		chatRoomList.addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent e){
+				//	방을 선택하고 마우스 오른쪽버튼을 눌렀을 때만 발생
+				if(e.getButton() == MouseEvent.BUTTON3 && !chatRoomList.isSelectionEmpty()){
+					//방 이름 세팅
+					roomname = (String)chatRoomList.getSelectedValue();
+					//비번방이면 방이름에서 [비번]제거
+					if(roomname.startsWith("[비번]")){
+						roomname = roomname.substring(roomname.indexOf("]") + 2);
+					}
+					//방이름에서 현재 인원수와 제한인원수 표시 제거(1\2)
+					roomname = roomname.substring(0, roomname.indexOf("("));
+					//서버에 Flag정보 날
+					//Transit.sendMsg("방정보/" + roomname);
+				}
+			}
+		});
+
+		//		팝업 메뉴를 띄우기 위한 유저 리스트에 대한 이벤트
+		connectedStudentList.addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent e){
+				//	유저를 선택하고 마우스 오른쪽버튼을 눌렀을 때만 발생
+				if(e.getButton() == MouseEvent.BUTTON3 && !connectedStudentList.isSelectionEmpty()){
+					//	선택한 유저를 담기
+					selectedId = connectedStudentList.getSelectedValue().toString();
+					//	팝업 띄우기
+					jpm_waitRoom_popupforIds.show(e.getComponent(), e.getX(), e.getY());
+				}
+			}
+		});
+
+		//	메시지 전송 창에서 엔터키에 대한 이벤트
+		inputTextField.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){
+				MainFrame.this.sendMsg();
+			}
+		});
+
+		//		프레임의 X를 눌렀을 때 아무런 동작을 안함
+		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+	} //이벤트 처리기 등록 함수 끝
+
+	//메시지 입력창에 메시지를 입력하고 엔터나 버튼 눌렀을 경우 수행
+	private void sendMsg(){
+		String msg = inputTextField.getText();
+		if(msg.length() == 0){
+			msg = " ";
+		}
+		//Transit.sendMsg("대기실대화/" + msg + "/" + fontName + "/" + fontSize + "/" + fontColor + "/" + toUser);
+		inputTextField.setText("");
+	}
+
+//	//패널 안보이게 설정
+//	private void excuteHiddenMode(){
+//		statusBarPanel.setVisible(false);
+//		mainWestPanel.setVisible(false);
+//		mainCenterPanel.setVisible(false);
+//		toolBarPanel.setVisible(false);
+//	} //패널 안보이게 설정 함수 끝
+
+	//이벤트 처리기
+	public void actionPerformed(ActionEvent e){
+		//프로그램 정보 메뉴
+		if(e.getSource() == informationMenuItem){
+			//메시지 대화상자 표시(어떤 것의 중앙, 메시지, 타이틀, 메시지대화유형)
+			JOptionPane.showMessageDialog(this, "Professor Supporter\n구동완이 제작한 프로그램입니다.", "프로그램 정보", JOptionPane.INFORMATION_MESSAGE);
+		}
+		//상태표시바 보이기
+		else if(e.getSource() == showStatusBarCheckMenuItem){
+			if (statusBarPanel.isVisible()) {
+				statusBarPanel.setVisible(false);
+			} else {
+				statusBarPanel.setVisible(true);
+			}
+		}
+		//왼쪽화면 보이기
+		else if(e.getSource() == showStudentListToggleButton || e.getSource() == showStudentListCheckMenuItem)
+		{
+			if (mainWestPanel.isVisible()) {
+				mainWestPanel.setVisible(false);
+				showStudentListToggleButton.setSelected(false);
+				showStudentListCheckMenuItem.setSelected(false);
+			} else {
+				mainWestPanel.setVisible(true);
+				showStudentListToggleButton.setSelected(true);
+				showStudentListCheckMenuItem.setSelected(true);
+			}
+		}
+		//오른쪽 화면 보이기
+		else if(e.getSource() == showChatListToggleButton || e.getSource() == showChatListCheckMenuItem){
+			if (mainCenterPanel.isVisible()) {
+				mainCenterPanel.setVisible(false);
+				showChatListToggleButton.setSelected(false);
+				showChatListCheckMenuItem.setSelected(false);
+			} else {
+				mainCenterPanel.setVisible(true);
+				showChatListToggleButton.setSelected(true);
+				showChatListCheckMenuItem.setSelected(true);
+			}
+		}
+		//툴바 보이기
+		else if(e.getSource() == showToolBarCheckMenuItem){
+			if (toolBarPanel.isVisible()) {
+				toolBarPanel.setVisible(false);
+			} else {
+				toolBarPanel.setVisible(true);
+			}
+		}
+		// 메뉴아이템에 입장 메뉴아이템이나 버튼을 눌렀을 때 수행
+		else if(e.getSource() == enterRoomMenuItem){
+			// 방을 선택 안했을 경우 수행
+			if(chatRoomList.isSelectionEmpty()){
+				JOptionPane.showMessageDialog(this, "입장할 방을 선택해 주시기 바랍니다.", "Join Error", JOptionPane.WARNING_MESSAGE);
+			}
+			// 방을 선택 했을 경우 수행
+			else{
+				//선택한 방 이름 세팅
+				roomname = (String)chatRoomList.getSelectedValue();
+				// 방이름에서 현재 인원수와 제한인원수 표시 제거(1\2)
+				roomname = roomname.substring(0, roomname.indexOf("("));
+				//컨트롤러에 키값 전송
+				manager.service("JoinRoom");
+			}
+		}
+		// 메뉴아이템에 방만들기 메뉴아이템이나 버튼을 눌렀을 때 수행
+		else if(e.getSource() == createChatRoomMenuItem || e.getSource() == createChatRoomButton){
+			Manager.MAKEROOMFORM.setVisible(true);
+		}
+		//메뉴의 1:1대화 메뉴아이템 선택했을 때 수행
+		else if(e.getSource() == privateChatMenuItem){
+			//Transit.sendMsg("전체유저/1:1대화/");
+		}
+		//메뉴의 쪽지 메뉴아이템 선택했을 때 수행
+		else if(e.getSource() == sendNoteMenuItem){
+			//Transit.sendMsg("전체유저/쪽지/");
+		}
+		//메뉴의 폰트 메뉴아이템 선택했을 때 수행
+		else if(e.getSource() == changeFontMenuItem){
+			FontDialog fontChooser = new FontDialog();
+			//폰트 다이얼로그 띄움
+			int result = fontChooser.showDialog(this);
+			//확인 버튼 눌렀을 경우 수행
+			if (result == FontDialog.OK_OPTION){
+				//선택한 폰트 세팅
+				Font font = fontChooser.getSelectedFont(); 
+				//폰트 선택 안 된 경우 빠져나감
+				if(font == null){
+					return;
+				}
+				//폰트 이름 세팅
+				fontName = fontChooser.getSelectedFontFamily();
+				//폰트 크기 세팅
+				fontSize = fontChooser.getSelectedFontSize();
+			}
+		}
+		//메뉴의 컬러 메뉴아이템 선택했을 때 수행
+		else if(e.getSource() == changeColorMenuItem){
+			fontColor = JColorChooser.showDialog(this, "글자색", this.contentOfChattingTextPane.getForeground()).getRGB();
+		}
+		//메뉴의 도움말 메뉴아이템 선택했을 때 수행
+		else if(e.getSource() == informationMenuItem){
+			JOptionPane.showMessageDialog(this, "Jay's Second-work\nChatting Project\nVersion 1.0",
+					"채팅창 정보", JOptionPane.INFORMATION_MESSAGE);
+		}
+//		//닉네임 변경 버튼 눌렀을 경우 수행
+//		else if(e.getSource() == jb_waitRoom_changeAlias){
+//			//변경할 닉네임 입력 창 띄움
+//			String ChangeAlias = JOptionPane.showInputDialog(this, "변경할 닉네임을 적어주세요");
+//			//입력한 값이 있으면 수행
+//			if(ChangeAlias != null)
+//				Transit.sendMsg("ChangeAlias/" + ChangeAlias + "/WaitingRoomForm");
+//		}
+		//메뉴의 파일 보내기 메뉴아이템을 선택했을 때 수행
+		else if(e.getSource() == sendFileMenuItem || e.getSource() == sendFileButton){
+			//Transit.sendMsg("전체유저/파일 보내기/");
+		}
+		//메시지 보내는 버튼 눌렀을 경우 수행
+		else if(e.getSource() == sendTextButton){
+			sendMsg();
+		}
+		//메뉴의 로그아웃 메뉴아이템이나 버튼 선택했을 때 수행
+		else if(e.getSource() == logoutMenuItem){
+			//로그아웃 여부 묻는 다이얼로그 띄움
+			int x = JOptionPane.showConfirmDialog(this, "정말 로그 아웃 하시겠습니까?", 
+					"Logout", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+			//확인 눌렀을 때 수행
+			if(x == JOptionPane.OK_OPTION){
+				//대화창 리셋
+				this.contentOfChattingTextPane.setText("");
+				//대기실 폼 안보이게 함
+				this.setVisible(false);
+				//대기실 폼 자원해제
+				this.dispose();
+				//컨트롤러에 키값 전송
+				manager.service("Logout");
+			}
+		}
+		//메뉴의 종료 메뉴아이템 선택시 수행
+		else if(e.getSource() == exitMenuItem){
+			this.exit();
+		}
+		//콤보박스 선택했을 경우 수행
+		else if(e.getSource() == connectedStudentComboBox){
+			//선택한 유저 세팅
+			toUser = this.connectedStudentComboBox.getSelectedItem().toString();
+		}
+		//팝업메뉴의 쪽지 보내기 눌렀을 경우 수행
+		else if(e.getSource() == mi_waitRoom_sendnote){
+			//메시지 입력받는 다이얼로그 띄움
+			String msg = JOptionPane.showInputDialog("메시지를 입력하십시오.");
+			//아무것도 입력 안했을 경우 수행
+			if(msg.length() == 0){
+				JOptionPane.showMessageDialog(this, "메시지를 입력해 주십시오.", "InstantMsg Error", JOptionPane.WARNING_MESSAGE);
+			}
+			//입력 한 경우 수행
+			else{
+				//Transit.sendMsg("쪽지/" + msg + "/" + this.selectedId);
+			}
+		}
+		//팝업 메뉴의 1:1 대화 메뉴아이템을 선택한 경우 수행
+		else if(e.getSource() == mi_waitRoom_privatechat){
+			//Transit.sendMsg("1:1대화요청/" + selectedId);
+		}
+		//팝업 메뉴의 파일 보내기 메뉴아이템을 선택한 경우 수
+		else if(e.getSource() == mi_waitRoom_sendFile){
+			//선택한 유저 세팅
+			String selectedId = this.connectedStudentList.getSelectedValue().toString();
+			//JFileChooser 열기
+			JFileChooser fileOpen = new JFileChooser("C:\\");
+			fileOpen.showOpenDialog(this);
+			File fileName = fileOpen.getSelectedFile();
+
+			if(fileName == null){
+				JOptionPane.showMessageDialog(fileOpen, "전송할 파일을 선택해 주시기 바랍니다.", "File Send Error", JOptionPane.WARNING_MESSAGE);
+			}
+			else{
+				new SendFile(Manager.MAINFRAME, fileName);
+				//Transit.sendMsg("파일전송/" + selectedId);
+			}
+		}
+	} 
+	private void exit(){
+		//		정말 종료할건지 물어보는 다이얼로그
+		int x = JOptionPane.showConfirmDialog(this, "정말 끝내시겠습니까?", "Quit", JOptionPane.OK_CANCEL_OPTION, 
+					JOptionPane.QUESTION_MESSAGE);
+		//		확인 버튼 눌렀을 때 수행
+		if(x == JOptionPane.OK_OPTION){
+			//	Flag 정보 Out 전송
+			//manager.service("Logout");
+			//	프로그램 종료
+			System.exit(0);
+		}
+	}
+
+	//툴바 생성
+	private void createToolBar(){
+		contentPane.setLayout(new BorderLayout(0, 0));
+
+		toolBarPanel = new JPanel();
+		toolBarPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		contentPane.add(toolBarPanel, BorderLayout.NORTH);
+		toolBarPanel.setLayout(new BoxLayout(toolBarPanel, BoxLayout.X_AXIS));
+		JToolBar toolBar = new JToolBar();
+		toolBarPanel.add(toolBar);
+		toolBar.setBackground(SystemColor.controlHighlight);
+
+		image = new ImageIcon(".\\image\\목록보기(25x22).jpg");
+		showStudentListToggleButton = new JToggleButton(image);
+		toolBar.add(showStudentListToggleButton);
+
+		image = new ImageIcon(".\\image\\채팅보이기(25x22).jpg");
+		showChatListToggleButton = new JToggleButton(image);
+		toolBar.add(showChatListToggleButton);
+
+		image = new ImageIcon(".\\image\\상태표시보기(25x22).jpg");
+		JToggleButton showStatusToggleButton = new JToggleButton(image);
+		toolBar.add(showStatusToggleButton);
+
+		image = new ImageIcon(".\\image\\구분자(3x26).jpg");
+		toolBar.add(new JLabel(image));
+
+		image = new ImageIcon(".\\image\\쪽지(25x22).jpg");
+		sendNoteButton = new JButton(image);
+		toolBar.add(sendNoteButton);
+
+		image = new ImageIcon(".\\image\\채팅(25x22).jpg");
+		doChattingButton = new JButton(image);
+		toolBar.add(doChattingButton);
+
+		image = new ImageIcon(".\\image\\방만들기(25x22).jpg");
+		JButton createChatRoomButton = new JButton(image);
+		toolBar.add(createChatRoomButton);
+
+		image = new ImageIcon(".\\image\\구분자(3x26).jpg");
+		toolBar.add(new JLabel(image));
+
+		image = new ImageIcon(".\\image\\파일보내기(25x22).jpg");
+		sendFileButton = new JButton(image);
+		toolBar.add(sendFileButton);
+
+		image = new ImageIcon(".\\image\\이메일보내기(25x22).jpg");
+		sendEmailButton = new JButton(image);
+		toolBar.add(sendEmailButton);
+
+		statusBarPanel = new JPanel();
+		statusBarPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		contentPane.add(statusBarPanel, BorderLayout.SOUTH);
+		statusBarPanel.setLayout(new GridLayout(0, 1, 0, 0));
+
+		statusBarLabel = new JLabel("대기");
+		statusBarPanel.add(statusBarLabel);
+
+		mainWestPanel = new JPanel();
+		mainWestPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		contentPane.add(mainWestPanel, BorderLayout.WEST);
+		mainWestPanel.setLayout(new BorderLayout(0, 0));
+
+
+		JPanel infomationOfStudentTitledPanel = new JPanel();
+		infomationOfStudentTitledPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "접속자의 개인정보 및 PC정보", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		mainWestPanel.add(infomationOfStudentTitledPanel, BorderLayout.NORTH);
+		infomationOfStudentTitledPanel.setLayout(new BorderLayout(0, 0));
+
+		informationOfStudentList = new JList<String>();
+		informationOfStudentList.setToolTipText("\uC120\uD0DD\uD55C \uCEF4\uD4E8\uD130\uC758 \uC790\uB9AC \uC815\uBCF4\uB97C \uBCF4\uC5EC\uC90D\uB2C8\uB2E4.");
+		informationOfStudentList.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		informationOfStudentList.setOpaque(false);
+		JScrollPane informationOfStudentScrollPane = new JScrollPane(informationOfStudentList);
+		informationOfStudentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		infomationOfStudentTitledPanel.add(informationOfStudentScrollPane, BorderLayout.CENTER);
+
+
+		JPanel connectedStudentTitledPanel = new JPanel();
+		connectedStudentTitledPanel.setBorder(new TitledBorder(null, "\uC811\uC18D\uC790 \uBAA9\uB85D", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		mainWestPanel.add(connectedStudentTitledPanel, BorderLayout.CENTER);
+		connectedStudentTitledPanel.setLayout(new BorderLayout(0, 0));
+
+		JScrollPane connectedStudentScrollPane = new JScrollPane();
+		connectedStudentTitledPanel.add(connectedStudentScrollPane, BorderLayout.CENTER);
+
+		connectedStudentList = new JList<String>();
+		connectedStudentList.setToolTipText("\uC811\uC18D\uC790\uB4E4\uC758 \uBAA9\uB85D\uC744 \uBCF4\uC5EC\uC90D\uB2C8\uB2E4.");
+		connectedStudentList.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		connectedStudentScrollPane.setViewportView(connectedStudentList);
+		connectedStudentList.setOpaque(false);
+
+		mainCenterPanel = new JPanel();
+		mainCenterPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		contentPane.add(mainCenterPanel, BorderLayout.CENTER);
+		mainCenterPanel.setLayout(new BorderLayout(0, 0));
+
+		JPanel chatRoomTitledPanel = new JPanel();
+		chatRoomTitledPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "\uB300\uD654\uBC29 \uBAA9\uB85D", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		mainCenterPanel.add(chatRoomTitledPanel, BorderLayout.NORTH);
+		chatRoomTitledPanel.setLayout(new BorderLayout(0, 0));
+
+		chatRoomList = new JList<String>();
+		chatRoomList.setToolTipText("\uC120\uD0DD\uD55C \uCEF4\uD4E8\uD130\uC758 \uC790\uB9AC \uC815\uBCF4\uB97C \uBCF4\uC5EC\uC90D\uB2C8\uB2E4.");
+		chatRoomList.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		chatRoomList.setOpaque(false);
+		JScrollPane chatRoomScrollPane = new JScrollPane(chatRoomList);
+		chatRoomTitledPanel.add(chatRoomScrollPane, BorderLayout.CENTER);
+
+		JPanel contentOfChattingTitledPanel = new JPanel();
+		contentOfChattingTitledPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "\uB300\uD654 \uBAA9\uB85D", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		mainCenterPanel.add(contentOfChattingTitledPanel, BorderLayout.CENTER);
+		contentOfChattingTitledPanel.setLayout(new BorderLayout(0, 0));
+
+		contentOfChattingTextPane = new JTextPane();
+		contentOfChattingTextPane.setToolTipText("\uC811\uC18D\uC790\uB4E4\uC758 \uB85C\uADF8 \uAE30\uB85D\uC785\uB2C8\uB2E4.");
+		contentOfChattingTextPane.setEditable(false);
+		contentOfChattingTextPane.setSize(50, 100);
+
+		JScrollPane contentOfChattingScrollPane = new JScrollPane(contentOfChattingTextPane, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		contentOfChattingTitledPanel.add(contentOfChattingScrollPane, BorderLayout.CENTER);
+		connectedStudentComboBox = new JComboBox<String>(userlist);
+		JPanel inputTextPanel = new JPanel();
+		inputTextPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		contentOfChattingTitledPanel.add(inputTextPanel, BorderLayout.SOUTH);
+		inputTextPanel.setLayout(new BoxLayout(inputTextPanel, BoxLayout.X_AXIS));
+		inputTextPanel.add(connectedStudentComboBox);
+
+		inputTextField = new JTextField();
+		inputTextPanel.add(inputTextField);
+		inputTextField.setColumns(10);
+
+		sendTextButton = new JButton("보내기");
+		inputTextPanel.add(sendTextButton);
+	} //툴바 생성 함수 끝
+}

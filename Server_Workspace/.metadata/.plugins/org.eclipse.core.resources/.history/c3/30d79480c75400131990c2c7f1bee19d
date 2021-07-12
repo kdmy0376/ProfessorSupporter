@@ -1,0 +1,122 @@
+package Controller;
+
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
+
+import Database.DBWork;
+import Login.LoginForm;
+import MainScreen.MainFrame;
+
+
+public class CommandSet{
+	//메니저 클래스에서 키값을 받음
+	public CommandSet(String key){
+		Manager manager = new Manager();
+		
+		//키값이 Join일 때 수행 
+		if(key.equals("Join")){
+			//회원 가입창 띄움
+			manager.showNextForm(key);
+		}
+		//키값이 Abort일 때 수행
+		else if(key.equals("Abort")){
+			//로그인 폼 띄움
+			manager.showNextForm(key);
+		}
+		//키값이 Login인 경우 수행
+		else if(key.equals("Login")){
+			//로그인 폼의 주소얻어옴
+			LoginForm frame = Manager.LOGINFORM;
+			
+			//입력한 정보 세팅
+			String id = frame.getID();
+			String pw = frame.getPassword();
+			
+			//프로그램에 로그인하는 작업
+			boolean isNull = false;
+
+			//입력하지 않은 정보가 있는지 체크
+			if(id.length() == 0 || pw.length() == 0){
+				isNull = true;
+			}
+
+			//입력하지 않은 정보가 있을 때
+			if(isNull){
+				JOptionPane.showMessageDialog(Manager.LOGINFORM, "해당 아이디가 이미 존재합니다.", "아이디 중복", JOptionPane.ERROR_MESSAGE);
+			}
+			//아이디와 비밀번호를 모두 입력하였을 때
+			else{
+				boolean isMatch = DBWork.isEqualIdAndPassword(id, pw);
+				//아이디와 비밀번호와 일치되면
+				if(isMatch){
+					System.out.println("[서버] 메인화면 호출을 위한 준비");
+					//대기실 접속 유저 목록에 클라이언트 추가
+					//대기실 주소 얻어옴
+					MainFrame frm = Manager.MAINFRAME;
+					//최초로 들어온 사람인 경우 입장메시지 대기실 대화창에 출력( 대기실 대화창에 아무런 글이 없다면 insertString을 쓸수가 없다)
+					if(frm.contentOfChattingTextPane.getText().length() == 0){
+						frm.contentOfChattingTextPane.setText("[" + id + "]님이 입장하셨습니다.\n");
+					}
+					//그 외의 경우 위와 같은 작업 
+					else{
+						try{
+							frm.contentOfChattingTextPane.getDocument().insertString(frm.contentOfChattingTextPane.getText().length(), 
+									"[" + id + "]님이 입장하셨습니다.\n", frm.contentOfChattingTextPane.getCharacterAttributes());
+						}catch(BadLocationException e){}
+					}
+					System.out.println("대기실입장 처리");
+					frm.contentOfChattingTextPane.setCaretPosition(frm.contentOfChattingTextPane.getText().length());
+					//대기실 접속 유저를 대기실의 유저리스트에 출력
+					server.broadcastGuestlist();
+					//대기실의 방 리스트를 출력
+					server.broadcastRoomlist();
+					System.out.println("[서버] 메인화면 호출을 위한 준비");
+					//대기실로 넘어가기 위한 메시지 전송
+					guest.sendMsg(arr[0] + "/true");
+				}
+				//아이디와 비밀번호가 일치되지 않으면
+				else{
+					guest.sendMsg(arr[0] + "/false");
+				}
+			}
+		}
+		//키 값이 Logout인 경우 수행
+		else if(key.equals("Logout")){
+			//서버로 Flag정보 보내줌
+			//Transit.sendMsg("Logout/");
+		}
+		//키 값이 MakeRoom인 경우 수행
+		else if(key.equals("MakeRoom")){
+			//방의 정보를 얻어와서 세팅
+			String roominfo = Manager.MAKEROOMFORM.getInfo();
+			//방 정보를 서버로 전송
+			//Transit.sendMsg("MakeRoom/" + roominfo);
+		}
+		//키 값이 JoinRoom인 경우 수행
+		else if(key.equals("JoinRoom")){
+			//방이릉 세팅
+			String roomname = Manager.MAINFRAME.roomname;
+			//비번 방인 경우 수행
+			if(roomname.startsWith("[")){
+				//입력한 비밀번호 세팅
+				String roompw = JOptionPane.showInputDialog(Manager.MAINFRAME, "비밀번호를 입력하십시오.");
+				//비밀 번호 입력하지 않았을 경우 수행
+				if(roompw == null){
+					JOptionPane.showMessageDialog(Manager.MAINFRAME, "비밀번호를 입력하지 않으셨습니다.", "PW Error", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				//서버에 Flag정보 전송
+				//Transit.sendMsg("JoinRoom/" + roomname.substring(roomname.indexOf("]") + 2) + "/" + roompw);
+			}
+			else{
+				//서버에 Flag정보 전송
+				//Transit.sendMsg("JoinRoom/" + roomname + "/" + null);
+			}
+		}
+		//키 값이 Adjustment인 경우 수행
+		else if(key.equals("Adjustment")){
+			//서버에 Flag정보 전송
+			//Transit.sendMsg("Adjustment/");
+		}
+	}
+}

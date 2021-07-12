@@ -1,0 +1,81 @@
+package ScreenShot;
+
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+
+import javax.imageio.ImageIO;
+
+import Controller.Manager;
+
+public class ImageGuest extends Thread{
+	//이미지 서버 참조 변수
+	private ImageServer server = null;
+	//스트림 변수
+	ObjectInputStream objectInputStream = null;
+	//클라이언트의 소켓
+	public Socket socket = null;
+	
+	boolean check = false;
+	BufferedImage bufferedImage = null;
+	
+	//생성자
+	public ImageGuest(Socket socket, ImageServer server){
+		this.socket = socket;
+		this.server = server;
+		try{
+			objectInputStream = new ObjectInputStream(socket.getInputStream());
+			System.out.println("스트림 생성 성공");
+			
+			bufferedImage = ImageIO.read(objectInputStream);
+			Manager.CAPTUREDSCREEN.setVisible(true);
+			Manager.CAPTUREDSCREEN.showScreenShot(bufferedImage);
+			new ImageReceiveThread().start();
+			
+		}catch(IOException e){
+			System.out.println("이미지 게스트 생성자 에러");
+		}
+	}
+	//이미지 클라이언트로부터 들어온 메시지 처리(서버로 들어온 메시지)
+	public void run(){
+		try{
+			String line = null;
+			while((line = bufferedReader.readLine()) != null){
+				System.out.println("이미지 클라이언트로부터 들어온 메시지 : " +line);
+				if(line.equals("요청")){
+					sendMsg("수락");
+				}
+			}
+		}catch(Exception e){
+			System.out.println("Guest Exception");
+		}
+	}
+	//이미지클라이언트로 메시지를 전달
+	public void sendMsg(String msg){
+		try{
+			System.out.println("이미지클라이언트로 메시지 전달 : " + msg);
+			bufferedWriter.write(msg + "\n");
+			bufferedWriter.flush();
+		}catch(IOException e){
+			System.out.println("Guest To Client");
+		}
+	}
+	class ImageReceiveThread extends Thread{
+		public void run(){
+			try {
+				while((bufferedImage = ImageIO.read(objectInputStream)) != null){
+					bufferedImage = ImageIO.read(objectInputStream);
+					Manager.CAPTUREDSCREEN.setVisible(true);
+					Manager.CAPTUREDSCREEN.showScreenShot(bufferedImage);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}

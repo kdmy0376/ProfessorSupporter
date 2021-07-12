@@ -1,0 +1,46 @@
+package ScreenShot;
+
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.net.Socket;
+
+import javax.imageio.ImageIO;
+
+import Controller.Manager;
+
+public class ImageGuest extends Thread{
+	private ImageServer server;
+	ObjectInputStream objectInputStream;
+	public BufferedReader br;
+	boolean check = false;
+	BufferedImage bufferedImage = null;
+	//클라이언트의 소켓
+	public Socket socket;
+	
+	public ImageGuest(Socket socket, ImageServer server){
+		this.socket = socket;
+		this.server = server;
+		try{
+			objectInputStream = new ObjectInputStream(socket.getInputStream());
+			br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			System.out.println("스트림 생성");
+			bufferedImage = ImageIO.read(objectInputStream);
+			System.out.println("버퍼 이미지 가져오기 성공");
+			if(check == false){
+				Manager.CAPTUREDSCREEN.setVisible(true);
+				check = true;
+			}
+			Manager.CAPTUREDSCREEN.showScreenShot(bufferedImage);
+			System.out.println("캡쳐된 화면 표시 완료");
+		}catch(IOException e){
+			System.out.println("Guest constructor Error");
+		}
+	}
+	
+	public void run(){
+		
+	}
+}

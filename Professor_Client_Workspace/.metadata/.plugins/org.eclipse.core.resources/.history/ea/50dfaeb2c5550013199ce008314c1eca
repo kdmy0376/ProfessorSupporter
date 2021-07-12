@@ -1,0 +1,92 @@
+package MainScreen;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.util.Vector;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+public class ComputerScreen extends JPanel {
+	Vector<Computer> computerList = new Vector<Computer>();
+	int x = 12;
+	int y = 10;
+	int computerNumber = 0;
+
+	//생성자
+	public ComputerScreen() {
+		Dimension size = new Dimension();//사이즈를 지정하기 위한 객체 생성
+		size.setSize(500, 1000);//객체의 사이즈를 지정
+		this.setPreferredSize(size);//사이즈 정보를 가지고 있는 객체를 이용해 패널의 사이즈 지정
+		setLayout(null);
+		int row = 0;
+		//컴퓨터 개수 24대
+		while(computerList.size() < 60){
+			//6개씩 배치
+			for(int i=0; i<6; i++){
+				Computer computer = new Computer(++computerNumber);
+				computer.setSize(80, 100);
+				if(i != 0){
+					x += 95;
+				}
+				if(x > 500){
+					x = 12;
+					y += 136;
+					break;
+				}
+				computer.setLocation(x, y);
+				add(computer);
+				computerList.add(computer);
+			}
+		}
+		System.out.println("사이즈 : " + this.getSize().height);
+	}
+	//컴퓨터 자리 클래스
+	class Computer extends JPanel{
+		private String positionNumber = null;
+		private String userName = null;
+		private String startedTime = null;
+		private boolean isOccupied = false;
+		private ImageIcon img = new ImageIcon(".\\image\\컴퓨터패널기본.png");
+		private JLabel numberLabel = null;
+		private JLabel nameLabel = null;
+		private JLabel timeLabel = null;
+
+		public Computer(int number){
+			this.setLayout(null);
+			this.createLabel(number);
+		}
+
+		public void createLabel(int number){
+			numberLabel = new JLabel(Integer.toString(number));
+			numberLabel.setBounds(5, 3, 25, 22); 
+			numberLabel.setFont(new Font("Gulim",Font.BOLD, 15));
+			this.add(numberLabel);
+
+			nameLabel = new JLabel("");
+			nameLabel.setBounds(55, 8, 90, 15);
+			this.add(nameLabel);
+
+			timeLabel = new JLabel("");
+			timeLabel.setBounds(12, 85, 97, 15);
+			this.add(timeLabel);
+		}
+
+		public void occupyPosition(String userName, String startedTime, 
+				boolean isOccupied, ImageIcon img){
+			this.userName = userName;
+			this.startedTime = startedTime;
+			this.isOccupied = isOccupied;
+			this.img = img;
+			nameLabel.setText(userName);
+			timeLabel.setText(startedTime);
+			this.repaint();
+		}
+
+		public void paintComponent(Graphics g){
+			g.drawImage(img.getImage(),0, 0, 121, 126, null, null);
+		}
+	}
+}

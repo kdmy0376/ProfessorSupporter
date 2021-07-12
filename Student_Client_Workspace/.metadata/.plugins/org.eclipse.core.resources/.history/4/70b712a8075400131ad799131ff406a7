@@ -1,0 +1,45 @@
+
+import javax.swing.*;
+import java.util.*;
+
+//컨트롤러 클래스
+public class Manager{
+	private static HashMap<String, JFrame> commands;
+	
+	//폼들의 주소
+	public static Login_Form LOGINFORM;
+//	public static WaitingRoomForm WAITINGROOMFORM;
+	public static MainFrame MAINFRAME;
+	public static MakeRoomForm MAKEROOMFORM;
+	
+	static{
+		commands = new HashMap<String, JFrame>();
+		
+//		WAITINGROOMFORM = new WaitingRoomForm();
+		MAINFRAME = new MainFrame();
+		LOGINFORM = new Login_Form();
+		MAKEROOMFORM = new MakeRoomForm();
+		
+		commands.put("Login", WAITINGROOMFORM);
+		commands.put("Abort", LOGINFORM);
+		commands.put("MakeRoom", null);
+		commands.put("Logout", LOGINFORM);
+		commands.put("JoinRoom", null);
+		commands.put("Update", null);
+	}
+	//키를 CommandSet으로 전달
+	public void service(String command){
+		if(commands.containsKey(command)){
+			new CommandSet(command);
+		}
+		else{
+			
+		}
+	}
+	//키에 해당하는 프레임을 보여주는 메서
+	public void showNextForm(String command){
+		if(commands.containsKey(command)){
+			commands.get(command).setVisible(true);
+		}
+	}
+}

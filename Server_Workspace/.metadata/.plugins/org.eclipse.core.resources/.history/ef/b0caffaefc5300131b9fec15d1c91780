@@ -1,0 +1,100 @@
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
+
+
+public class Splashscr extends JDialog {
+
+	private final JPanel contentPanel = new JPanel();
+	JProgressBar progressBar = null;
+	int count = 0;
+	Splashscr sss = this;
+	/**
+	 * Launch the application.
+	 */
+//	public static void main(String[] args) {
+//		try {
+//			SplashScreen dialog = new SplashScreen();
+//			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+//			dialog.setVisible(true);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
+	
+	public Splashscr() {
+		setUndecorated(true);
+		applyLookAndFeel();
+		setBounds(100, 100, 420, 250);
+		getContentPane().setLayout(new BorderLayout());
+		contentPanel.setLayout(new FlowLayout());
+		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		{
+			JPanel buttonPane = new JPanel();
+			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+			getContentPane().add(buttonPane, BorderLayout.SOUTH);
+			final ImageIcon img = new ImageIcon(".\\image\\ProfessorSupporter(Professor Version).png"); //이미지..
+			  
+			JPanel background = new JPanel(null){
+				public void paintComponent(Graphics e){ //대기실전체이미지
+					e.drawImage(img.getImage(),0, 0, 420, 250, null, null);
+				}
+			};
+			
+			getContentPane().add(background, BorderLayout.CENTER);
+			progressBar = new JProgressBar();
+			getContentPane().add(progressBar, BorderLayout.SOUTH);
+		}
+		
+		//		프레임이 유저 모니터의 정중앙에 위치하게 하기 위한 좌표
+		int x = (int)this.getToolkit().getScreenSize().getWidth() / 2 - (int)this.getSize().getWidth() / 2;
+		int y = (int)this.getToolkit().getScreenSize().getHeight() / 2 - (int)this.getSize().getHeight() / 2;
+		this.setLocation(x, y);
+		ProgressThread pt = new ProgressThread();
+		pt.start();
+		
+	}
+	//룩앤필 적용
+	private void applyLookAndFeel(){
+		//룩앤필 불러오기
+		try{
+			UIManager.setLookAndFeel("com.birosoft.liquid.LiquidLookAndFeel");
+			//UIManager.setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
+			//UIManager.setLookAndFeel("com.jtattoo.plaf.Alcy.McWinLookAndFeel");
+			this.setDefaultLookAndFeelDecorated(true);
+		}catch(Exception e){
+			System.out.println("룩앤필 적용 실패");
+			e.printStackTrace();
+		}
+	} //룩앤필 적용 함수 끝
+	class ProgressThread extends Thread{
+		public void run(){
+			while(count <= 100){
+				try{
+					
+					progressBar.setValue(count++);
+					sleep(3);
+				}catch(Exception e){
+					
+				}
+			}
+			
+			//서버와 통신하기 위한 쓰레드 시작
+			new Transit().start();
+			
+			//로그인폼 생성 후 보여줌
+			LoginForm loginForm = Manager.LOGINFORM;
+			loginForm.setVisible(true);
+			sss.dispose();
+			
+		}
+	}
+}

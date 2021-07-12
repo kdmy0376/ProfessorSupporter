@@ -1,0 +1,48 @@
+package ScreenShot;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Vector;
+
+
+
+public class ImageServer extends Thread{
+	Vector<ImageGuest> guestlist;
+	
+	public ImageServer(){
+		try {
+			ServerSocket serverSocket = new ServerSocket(20001);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		guestlist = new Vector<ImageGuest>();
+	}
+	
+	public void run(){
+		try {
+			while(true){
+				System.out.println("[교수 클라이언트] 클라이언트 대기중");
+				Socket socket = serverSocket.accept();
+				System.out.println("[교수 클라이언트] 클라이언트 접속");
+				
+				ImageGuest imageGuest = new ImageGuest(socket, this);
+				imageGuest.start();
+				
+//				ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+//				System.out.println("스트림 생성");
+//				bufferedImage = ImageIO.read(objectInputStream);
+//				System.out.println("버퍼 이미지 가져오기 성공");
+//				if(check == false){
+//					Manager.CAPTUREDSCREEN.setVisible(true);
+//					check = true;
+//				}
+//				Manager.CAPTUREDSCREEN.showScreenShot(bufferedImage);
+//				System.out.println("캡쳐된 화면 표시 완료");
+			}
+		} catch (IOException e) {
+			System.out.println("[이미지 서버] 생성자 에러");
+		}
+	}
+}

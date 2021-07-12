@@ -1,0 +1,65 @@
+package Welcome;
+
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import java.awt.Font;
+import java.awt.Color;
+
+public class WelcomeProgram extends JPanel {
+
+	public WelcomeProgram() {
+		setLayout(null);
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.LIGHT_GRAY);
+		panel.setBounds(12, 26, 521, 99);
+		add(panel);
+		panel.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("Welcome to Professor Supporter");
+		lblNewLabel.setBackground(Color.LIGHT_GRAY);
+		lblNewLabel.setFont(new Font("Miriam", Font.BOLD, 32));
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setBounds(12, 22, 497, 55);
+		panel.add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel("\u25A0 \uD504\uB85C\uADF8\uB7A8 \uC81C\uACF5 \uAE30\uB2A5");
+		lblNewLabel_1.setBounds(12, 150, 133, 15);
+		add(lblNewLabel_1);
+		
+		JLabel lblNewLabel_2 = new JLabel("1. 1:1\uCABD\uC9C0 \uBC0F \uC804\uCCB4 \uCABD\uC9C0\uBCF4\uB0B4\uAE30");
+		lblNewLabel_2.setBounds(33, 175, 179, 15);
+		add(lblNewLabel_2);
+		
+		JLabel label = new JLabel("2. 1:1\uB300\uD654 \uBC0F \uB2E4\uC790\uAC04 \uB300\uD654");
+		label.setBounds(33, 200, 179, 15);
+		add(label);
+		
+		JLabel label_1 = new JLabel("4. \uC811\uC18D\uC790\uB4E4\uC758 \uBAA9\uB85D\uACFC PC\uBC30\uCE58\uB3C4");
+		label_1.setBounds(33, 250, 179, 15);
+		add(label_1);
+		
+		JLabel label_2 = new JLabel("3. \uBE44\uBC88\uBC29, \uADD3\uC18D\uB9D0, \uCD08\uB300, \uAC15\uC81C\uD1F4\uC7A5\uAE30\uB2A5");
+		label_2.setBounds(33, 225, 236, 15);
+		add(label_2);
+		
+		JLabel label_3 = new JLabel("5. \uC811\uC18D\uD55C \uD559\uC0DD\uB4E4\uC758 PC\uD654\uBA74 \uCEA1\uCCD0");
+		label_3.setBounds(33, 275, 205, 15);
+		add(label_3);
+		
+		JLabel label_4 = new JLabel("6. \uC811\uC18D\uD55C \uD559\uC0DD\uB4E4\uC758 PC\uD654\uBA74 \uBCF4\uAE30");
+		label_4.setBounds(33, 300, 205, 15);
+		add(label_4);
+		
+		JLabel lblNewLabel_3 = new JLabel("7. \uD559\uC0DD\uB4E4\uC758 \uC815\uBCF4\uB97C \uB4F1\uB85D, \uC218\uC815, \uC0AD\uC81C, \uAC80\uC0C9\uAC00\uB2A5");
+		lblNewLabel_3.setBounds(33, 325, 260, 15);
+		add(lblNewLabel_3);
+		
+		JLabel lblNewLabel_4 = new JLabel("8. \uD30C\uC77C\uBCF4\uB0B4\uAE30");
+		lblNewLabel_4.setBounds(33, 350, 94, 15);
+		add(lblNewLabel_4);
+
+	}
+}

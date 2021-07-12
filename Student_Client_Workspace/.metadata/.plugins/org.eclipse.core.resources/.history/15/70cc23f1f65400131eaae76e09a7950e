@@ -1,0 +1,154 @@
+package Chat;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+import Controller.Manager;
+
+public class MakeRoomForm extends JFrame implements ActionListener, ItemListener{
+	private static final long serialVersionUID = 1L;
+	//접속 제한 인원 세팅하는 콤보박스
+	private JComboBox<String> jcb_MakeRoomForm_personnumber;
+	//정보 입력 창
+	private JTextField jtf_MakeRoomForm_roomNameLabel;
+	private JTextField jtf_MakeRoomForm_roompw;
+	//버튼들
+	private JButton jb_MakeRoomForm_makeroom;
+	private JButton jb_MakeRoomForm_cancle;
+
+	//컨트롤러 클래스
+	private Manager manager;
+	//제한 인원과 폰트 색을 기본적으로 선택돼게 함
+	private String personlimit = "2";
+	private String titlecolor = "BLACK";
+	private Container contentPane = null;
+	private final String[] person = {"2", "4", "8", "16"};
+
+	//생성자
+	public MakeRoomForm(){
+		super("방 만들기");			//프레임창 제목
+		this.setLayout(null);		//전체 레이아웃
+		this.initializeMember();	//멤버 변수 초기화
+		this.createMakeRoomForm();	//방 만들기 양식 생성
+		this.setSize(270, 220);		//프레임 크기
+		this.displayCenter();		//화면 중앙 위치
+		this.setResizable(false);	//크기 조절 불가능
+		this.mountEventHandler();	//이벤트 처리기 등록
+	} //생성자 끝
+
+	//멤버 변수 초기화
+	private void initializeMember(){
+		contentPane = this.getContentPane();
+		manager = new Manager();
+	} //멤버 변수 초기화 함수 끝
+
+	//이벤트 처리기 등록
+	private void mountEventHandler(){
+		jcb_MakeRoomForm_personnumber.addItemListener(this);
+		jb_MakeRoomForm_makeroom.addActionListener(this);
+		jb_MakeRoomForm_cancle.addActionListener(this);
+
+		//프레임의 X눌렀을 때 아무 작업 안하게 세팅
+		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		//프레임의 X눌렀을 때 수행
+		this.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent we){
+				//프레임 안보이게 함
+				MakeRoomForm.this.setVisible(true);
+				//자원해제
+				MakeRoomForm.this.dispose();
+			}
+		});
+	} //이벤트 처리기 등록 함수 끝
+
+	//화면 중앙 표시
+	private void displayCenter(){
+		//화면의 크기
+		Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();	
+		//프레임의 크기
+		Dimension frameDimension = this.getSize();
+		//화면 넓이/2 - 프레임 넓이/2
+		int xPosition = (int)(screenDimension.getWidth()/2 - frameDimension.getWidth()/2);
+		//화면 높이/2 - 프레임 높이/2
+		int yPosition = (int)(screenDimension.getHeight()/2 - frameDimension.getHeight()/2) - 20;
+		this.setLocation(xPosition, yPosition);
+	} //화면 중앙 표시 함수 끝
+
+	//방 정보 얻는 메서드
+	public String getInfo(){
+		//입력한 방이름 세팅
+		String roomNameLabel = this.jtf_MakeRoomForm_roomNameLabel.getText();
+		//입력한 비밀번호 세팅
+		String roompw = this.jtf_MakeRoomForm_roompw.getText();
+		return roomNameLabel + "/" + personlimit + "/" + titlecolor + "/" + roompw;
+	}
+
+	public void actionPerformed(ActionEvent e){
+		//방만들기 버튼 눌렀을 때 수행
+		if(e.getSource() == jb_MakeRoomForm_makeroom){
+			//컨트롤러에 수행 할 키 값 전송
+			manager.service("MakeRoom");
+			jtf_MakeRoomForm_roomNameLabel.setText("");
+			jtf_MakeRoomForm_roompw.setText("");
+		}
+		//취소 버튼 눌렀을 때 수행
+		else{
+			//프레임 안보이게 함
+			this.setVisible(true);
+			//자원해제 
+			this.dispose();
+		}
+	}
+
+	public void itemStateChanged(ItemEvent e){
+		//제한 인원 선택했을 때 수행
+		if(e.getSource() == this.jcb_MakeRoomForm_personnumber){
+			//제한 인원 세
+			personlimit = this.jcb_MakeRoomForm_personnumber.getSelectedItem().toString();
+		}
+	}
+
+	//방 만들기 양식 생성
+	private void createMakeRoomForm(){
+		//방 제한 인원
+		JLabel titleLabel = new JLabel("방 만들기");
+		JLabel roomNameLabel = new JLabel("방제목");
+		JLabel roomPasswordLabel = new JLabel("비밀번호");
+		JLabel personNumberLabel = new JLabel("인원");
+		jcb_MakeRoomForm_personnumber 	= new JComboBox<String>(person);
+		jtf_MakeRoomForm_roomNameLabel 		= new JTextField(20);
+		jtf_MakeRoomForm_roompw			= new JTextField(20);
+		jb_MakeRoomForm_makeroom 		= new JButton("만들기");
+		jb_MakeRoomForm_cancle 			= new JButton("취소");
+
+		//버튼 서식 설정
+		jb_MakeRoomForm_makeroom.setFont(new Font("Dialog", Font.BOLD, 12));
+		jb_MakeRoomForm_makeroom.setMargin(new Insets(0, 0, 0, 0));
+		jb_MakeRoomForm_makeroom.setHorizontalTextPosition(JButton.LEFT);
+
+		jb_MakeRoomForm_cancle.setFont(new Font("Dialog", Font.BOLD, 12));
+		jb_MakeRoomForm_cancle.setMargin(new Insets(0, 0, 0, 0));
+		jb_MakeRoomForm_cancle.setHorizontalTextPosition(JButton.LEFT);
+
+		contentPane.add(titleLabel);
+		contentPane.add(roomNameLabel);
+		contentPane.add(roomPasswordLabel);
+		contentPane.add(personNumberLabel);
+		contentPane.add(jcb_MakeRoomForm_personnumber);
+		contentPane.add(jtf_MakeRoomForm_roomNameLabel);
+		contentPane.add(jtf_MakeRoomForm_roompw);
+		contentPane.add(jb_MakeRoomForm_makeroom);
+		contentPane.add(jb_MakeRoomForm_cancle);
+
+		titleLabel.setBounds(108, 3, 80, 25);
+		roomNameLabel.setBounds(5, 30, 80, 25);
+		roomPasswordLabel.setBounds(5, 60, 80, 25);
+		personNumberLabel.setBounds(5, 100, 80, 25);
+		jcb_MakeRoomForm_personnumber.setBounds(50, 100, 50, 25);
+		jtf_MakeRoomForm_roomNameLabel.setBounds(60, 30, 200, 25);
+		jtf_MakeRoomForm_roompw.setBounds(60, 60, 200, 25);
+		jb_MakeRoomForm_makeroom.setBounds(60, 150, 65, 30);
+		jb_MakeRoomForm_cancle.setBounds(140, 150, 65, 30);
+	} //방 만들기 양식 생성 함수 끝
+}
